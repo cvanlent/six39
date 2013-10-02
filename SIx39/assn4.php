@@ -1,4 +1,5 @@
 <?php
+
 require_once "../lib/header.php";
 require_once "header.php";
 use Goutte\Client;
