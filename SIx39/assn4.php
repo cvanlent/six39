@@ -21,7 +21,7 @@ line_out("Retrieved ".strlen($html)." characters.");
 togglePre("Show retrieved page",$html);
 
 
-
+line_out("Grade = ". $grade);
 line_out("Searching for <title> tag...");
 
 try {
@@ -30,8 +30,10 @@ try {
 } catch(Exception $ex) {
     error_out("Did not find title tag");
     $title = "";
+    $grade+=10;
 }
 
+line_out("Grade = ". $grade);
 line_out("Searching for external style sheet...");
 
 try {
@@ -41,8 +43,10 @@ try {
     $crawler2 = $client->request('GET', htmlent_utf8($dir)."/".$link);
 
     $file_headers = @get_headers(htmlent_utf8($dir)."/".$link);
-    if (URLIsValid(htmlent_utf8($dir)."/".$link))
+    if (URLIsValid(htmlent_utf8($dir)."/".$link)){
         line_out($link." was  a valid  file.");
+        $grade+=10;
+}
     else
         error_out($link."  was not  a valid  file.");
 } catch(Exception $ex) {
@@ -50,36 +54,48 @@ try {
     $link = "";
 }
 
-
+line_out("Grade = ". $grade);
 line_out("Searching for <body> tag...");
 
 try {
     $body = $crawler->filter('body')->text();
     line_out("Found body tag...");
+    $grade+=10;
+
 } catch(Exception $ex) {
     error_out("Did not find body tag");
     $body = "";
 }
 
+line_out("Grade = ". $grade);
+
 line_out("Searching for <header> tag...");
 
 try {
 	$header = $crawler->filter('header')->text();
-    line_out("Found header tag...");
+    	line_out("Found header tag...");
+        $grade+=10;
+
 } catch(Exception $ex) {
     error_out("Did not find header tag");
 	$header = "";
 }
+
+line_out("Grade = ". $grade);
 
 line_out("Searching for <nav> tag...");
 
 try {
     $nav = $crawler->filter('nav')->text();
     line_out("Found nav tag...");
+    $grade+=10;
+
 } catch(Exception $ex) {
     error_out("Did not find nav tag");
     $nav = "";
 }
+
+line_out("Grade = ". $grade);
 
 line_out("Checking the links...");
 $dom = new DOMDocument;
@@ -89,26 +105,36 @@ foreach ($dom->getElementsByTagName('a') as $node)
   $u = $node->getAttribute("href");
   if (URLIsValid(htmlent_utf8($dir)."/".$u) || URLIsValid($u))
     line_out($u." was  a valid  file.");
-  else
+  else{
     error_out($u."  was not  a valid  file.");
+    grade-=1;
 }
 
+
+line_out("Grade = ". $grade);
 
 line_out("Searching for lists in the nav...there shouldn't be any");
 
 try {
     $navlinks = $crawler->filter('nav > ul')->text(); 
     error_out("Found lists in the navigation");
+    
 } catch(Exception $ex) {
     line_out("Did not find links in the navigation");
     $navlinks = "";
+        $grade-=10;
+
 }
+
+line_out("Grade = ". $grade);
 
 line_out("Searching for <footer> tag...");
 
 try {
 	$footer = $crawler->filter('footer')->text();
     line_out("Found footer tag...");
+        $grade-=10;
+
 } catch(Exception $ex) {
     error_out("Did not find footer tag");
 	$footer = "";
@@ -116,44 +142,48 @@ try {
 
 
 /*NOW LOOK FOR THINGS THAT SHOULD BE THERE */
+line_out("Grade = ". $grade);
 
 line_out("Searching for header, navbar, and footer ids...they shouldn't be here");
 
 try {
     $headerID = $crawler->filterXPath('//div')->attr('id');
-    if ($headerID == "header")
+    if ($headerID == "header"){
         error_out("Found div tag with header id!!...");
-    if ($headerID == "navbar")
+            $grade-=10;
+    }
+
+    if ($headerID == "navbar"){
         error_out("Found div tag with navbar id!!...");
-    if ($headerID == "footer")
+        $grade-=10;
+    }
+    if ($headerID == "footer"){
         error_out("Found div tag with footer id!!...");
+        $grade-=10;
+    }
 } catch(Exception $ex) {
     $headerID = "";
 }
+line_out("Grade = ". $grade);
 
 line_out("Searching for <table> tag...(it shouldn't be here)");
 
 try {
-	$table = $crawler->filter('table')->text();
+	$table = $crawler->filter('table')->text();{
 	error_out("Found a  table tag");
+	$grade-=10;
+    }
 } catch(Exception $ex) {
     line_out("Did not find table tag");
 	$table = "";
 }
 
-//COLLEEN - WHERE DID DISPLAY NAME COME FROM??
-if ( $displayname && strpos($h1,$displayname) !== false ) {
-	success_out("Found ($displayname) in the h1 tag");
-} else if ( $displayname ) {
-	line_out("Warning: Unable to find $displayname in the h1 tag");
-}
-
-//COLLEEN Can I search for something *between* elements
+line_out("Grade = ". $grade);
 
 
-$success = "";
+$success = " ";
 $failure = "";
-$grade = 0.0;
+//$grade = 0.0;
 
 //COLLEEN -- help me here...
 /*if ( strpos($nav, "<li>") !== false ) {
@@ -176,7 +206,7 @@ if ( strlen($success) > 0 ) {
     error_log("No status");
     exit();
 }
-
+$grade = $grade/100;
 // Send grade
 //COLLEEN --DID Penalty come from CTools?
 if ( $penalty !== false ) $grade = $grade * (1.0 - $penalty);
