@@ -21,7 +21,7 @@ line_out("Retrieved ".strlen($html)." characters.");
 togglePre("Show retrieved page",$html);
 
 
-
+line_out("Grade is ".$grade);
 line_out("Searching for <title> tag...");
 
 try {
