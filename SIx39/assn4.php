@@ -8,6 +8,7 @@ line_out("Grading SI339 and SI 539 Assignments 4/7");
 $url = getUrlSIx39('http://csevumich.byethost18.com/howdy.php');
 $grade = 0;
 
+line_out("Grade is ". $grade;
 error_log("ASSN04 ".$url);
 line_out("Retrieving ".htmlent_utf8($url)."...");
 flush();
