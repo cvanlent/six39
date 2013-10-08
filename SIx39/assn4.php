@@ -178,7 +178,7 @@ try {
 	$table = "";
 }
 
-line_out("Grade = ". $grade);
+line_out("Grade = ". $grade/50.0);
 
 
 $success = " ";
